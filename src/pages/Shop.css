@@ -1,0 +1,16 @@
+.shop-container {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .shop-container {
+    padding: 10px;
+  }
+}
+
+.bg-background {
+  background-color: var(--background);
+}

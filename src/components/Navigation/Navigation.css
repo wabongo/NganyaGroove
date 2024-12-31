@@ -1,0 +1,299 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+}
+
+.navbar-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0.75rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-logo {
+  height: 45px;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-logo img {
+  height: 100%;
+  width: auto;
+  border-radius: 4px;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-link {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #ffd700;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: #ffd700;
+}
+
+.nav-button {
+  background: #ffd700;
+  color: #000;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.nav-button:hover {
+  background: #ffed4a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
+}
+
+.navbar__menu-button {
+  position: fixed;
+  top: 1.5rem;
+  right: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1002;
+  transition: transform 0.3s ease;
+}
+
+.navbar__menu-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.navbar__menu-button span {
+  width: 100%;
+  height: 2px;
+  background-color: #333;
+  transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
+}
+
+.navbar__menu-button.is-active {
+  transform: translateX(-320px);
+}
+
+.navbar__menu-button.is-active span {
+  background-color: #4f4f54;
+}
+
+.navbar__menu-button.is-active span:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+
+.navbar__menu-button.is-active span:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar__menu-button.is-active span:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
+}
+
+.navbar__overlay {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 300px;
+  height: 100vh;
+  background: #fcf652;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: right 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+  z-index: 1000;
+}
+
+.navbar__overlay::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: -1;
+}
+
+.navbar__overlay.is-open {
+  right: 0;
+}
+
+.navbar__overlay.is-open::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+.navbar__items {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 4rem 2rem 2rem;
+  text-align: right;
+  width: 100%;
+}
+
+.navbar__item-wrapper {
+  overflow: hidden;
+  transform: translateX(100%);
+  opacity: 0;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.navbar__overlay.is-open .navbar__item-wrapper {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.navbar__item {
+  color: #4f4f54;
+  text-decoration: none;
+  font-size: 1.8rem;
+  font-weight: 700;
+  padding: 0.5rem;
+  transition: color 0.3s ease;
+  display: inline-block;
+  position: relative;
+}
+
+.navbar__item:hover {
+  color: #000;
+  text-decoration: line-through;
+}
+
+.navbar__item.is-active {
+  color: #000;
+}
+
+.navbar__item.is-active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #000;
+  transform-origin: right;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.navbar__item.is-active:hover::after {
+  transform-origin: left;
+  transform: scaleX(1);
+}
+
+main {
+  padding-top: 82px; /* navbar height + padding */
+}
+
+@media (min-width: 769px) {
+  .navbar__overlay {
+    width: 400px;
+  }
+  
+  .navbar__menu-button.is-active {
+    transform: translateX(-420px);
+  }
+
+  .navbar__item {
+    font-size: 2.2rem;
+  }
+}
+
+/* Styles for hamburger menu */
+.hamburger-icon {
+  display: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.hamburger-icon svg {
+  fill: #fff;
+  transition: transform 0.3s ease;
+}
+
+.hamburger-icon.open svg rect:nth-child(1) {
+  transform: translateY(15px) rotate(45deg);
+}
+
+.hamburger-icon.open svg rect:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-icon.open svg rect:nth-child(3) {
+  transform: translateY(-15px) rotate(-45deg);
+}
+
+@media (max-width: 768px) {
+  .navbar-container {
+    padding: 0.5rem 1rem;
+  }
+
+  .navbar-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.95);
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0;
+    gap: 1rem;
+  }
+
+  .navbar-links.open {
+    display: flex;
+  }
+
+  .hamburger-icon {
+    display: block;
+  }
+}

@@ -1,0 +1,133 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String         @id @default(uuid()) @db.Uuid
+  email        String        @unique
+  passwordHash String        @map("password_hash")
+  name         String
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+  orders       Order[]
+  reviews      Review[]
+  tripBookings TripBooking[]
+
+  @@map("users")
+}
+
+model Product {
+  id            String           @id @default(uuid()) @db.Uuid
+  name          String
+  description   String?
+  price         Decimal         @db.Decimal(10, 2)
+  category      String
+  imageUrl      String?         @map("image_url")
+  stockQuantity Int             @default(0) @map("stock_quantity")
+  createdAt     DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime        @updatedAt @map("updated_at") @db.Timestamptz
+  variants      ProductVariant[]
+  orderItems    OrderItem[]
+  reviews       Review[]
+
+  @@map("products")
+}
+
+model ProductVariant {
+  id            String      @id @default(uuid()) @db.Uuid
+  productId     String      @map("product_id") @db.Uuid
+  size          String?
+  color         String?
+  stockQuantity Int         @default(0) @map("stock_quantity")
+  createdAt     DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime    @updatedAt @map("updated_at") @db.Timestamptz
+  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderItems    OrderItem[]
+
+  @@map("product_variants")
+}
+
+model Order {
+  id              String      @id @default(uuid()) @db.Uuid
+  userId          String      @map("user_id") @db.Uuid
+  status          String
+  totalAmount     Decimal     @map("total_amount") @db.Decimal(10, 2)
+  shippingAddress String?     @map("shipping_address")
+  createdAt       DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime    @updatedAt @map("updated_at") @db.Timestamptz
+  user            User        @relation(fields: [userId], references: [id])
+  items           OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id               String         @id @default(uuid()) @db.Uuid
+  orderId          String        @map("order_id") @db.Uuid
+  productId        String        @map("product_id") @db.Uuid
+  productVariantId String?       @map("product_variant_id") @db.Uuid
+  quantity         Int
+  priceAtTime      Decimal       @map("price_at_time") @db.Decimal(10, 2)
+  createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  order            Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product          Product       @relation(fields: [productId], references: [id])
+  productVariant   ProductVariant? @relation(fields: [productVariantId], references: [id])
+
+  @@map("order_items")
+}
+
+model Trip {
+  id             String        @id @default(uuid()) @db.Uuid
+  name           String
+  description    String?
+  price          Decimal       @db.Decimal(10, 2)
+  category       String
+  duration       String
+  date           DateTime      @db.Date
+  time           DateTime      @db.Time
+  meetingPoint   String       @map("meeting_point")
+  availableSeats Int          @map("available_seats")
+  imageUrl       String?      @map("image_url")
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime     @updatedAt @map("updated_at") @db.Timestamptz
+  bookings       TripBooking[]
+  reviews        Review[]
+
+  @@map("trips")
+}
+
+model TripBooking {
+  id             String    @id @default(uuid()) @db.Uuid
+  tripId         String    @map("trip_id") @db.Uuid
+  userId         String    @map("user_id") @db.Uuid
+  numberOfSeats  Int       @map("number_of_seats")
+  totalAmount    Decimal   @map("total_amount") @db.Decimal(10, 2)
+  status         String
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  trip           Trip      @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  user           User      @relation(fields: [userId], references: [id])
+
+  @@map("trip_bookings")
+}
+
+model Review {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  tripId    String?   @map("trip_id") @db.Uuid
+  productId String?   @map("product_id") @db.Uuid
+  rating    Int
+  comment   String?
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  user      User      @relation(fields: [userId], references: [id])
+  trip      Trip?     @relation(fields: [tripId], references: [id])
+  product   Product?  @relation(fields: [productId], references: [id])
+
+  @@map("reviews")
+}
